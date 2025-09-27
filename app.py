@@ -42,22 +42,69 @@ def recommend(movie):
     return recommended_movie_names, recommended_movie_posters
 
 # ---------------- Streamlit UI ----------------
-st.header("🎬 Movie Recommender System")
+st.set_page_config(page_title="Movie Recommender", page_icon="🎬", layout="wide")
+
+# Custom CSS styling
+st.markdown("""
+    <style>
+        body {
+            background-color: #0e1117;
+            color: #fafafa;
+        }
+        .main {
+            background-color: #0e1117;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #ff4b4b !important;
+            text-align: center;
+            font-family: 'Trebuchet MS', sans-serif;
+        }
+        .stSelectbox label {
+            font-size: 18px !important;
+            font-weight: bold;
+            color: #f5f5f5 !important;
+        }
+        .movie-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #e5e5e5;
+        }
+        .stButton button {
+            background-color: #ff4b4b;
+            color: white;
+            border-radius: 10px;
+            padding: 0.6em 1.2em;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .stButton button:hover {
+            background-color: #ff1c1c;
+            transition: 0.3s;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("<h1>🎬 Movie Recommender System</h1>", unsafe_allow_html=True)
 
 movies = pickle.load(open("movies.pkl", "rb"))
 similarity = pickle.load(open("similarity.pkl", "rb"))
 
 movie_list = movies['title'].values
 selected_movie = st.selectbox(
-    "Type or select a movie from the dropdown",
+    "✨ Type or select a movie from the dropdown",
     movie_list
 )
 
 if st.button("Show Recommendation"):
     recommended_movie_names, recommended_movie_posters = recommend(selected_movie)
 
-    cols = st.columns(5)
+    st.markdown("<h2>🔥 Top 5 Recommendations</h2>", unsafe_allow_html=True)
+    cols = st.columns(5, gap="large")
+
     for i, col in enumerate(cols):
         with col:
-            st.text(recommended_movie_names[i])
-            st.image(recommended_movie_posters[i])
+            st.image(recommended_movie_posters[i], use_container_width=True)
+            st.markdown(f"<div class='movie-title'>{recommended_movie_names[i]}</div>", unsafe_allow_html=True)
